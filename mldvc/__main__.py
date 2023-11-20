@@ -1,7 +1,7 @@
 import argparse
 import pathlib
 
-from pyvcs.cli import (
+from mldvc.cli import (
     cmd_cat_file,
     cmd_checkout,
     cmd_commit_tree,
