@@ -53,9 +53,7 @@ def add_hash_object_subparser(subparsers) -> None:
 
 
 def add_cat_file_subparser(subparsers) -> None:
-    cat_file_subparser = subparsers.add_parser(
-        "cat-file", help="Provide content of repository objects."
-    )
+    cat_file_subparser = subparsers.add_parser("cat-file", help="Provide content of repository objects.")
 
     group = cat_file_subparser.add_mutually_exclusive_group(required=True)
     # NOTE: Mutually exclusive arguments must be optional
@@ -73,16 +71,12 @@ def add_cat_file_subparser(subparsers) -> None:
         action="store_true",
         help="Pretty-print the contents of <object> based on its type",
     )
-    cat_file_subparser.add_argument(
-        "object", metavar="object", help="The name of the object to show"
-    )
+    cat_file_subparser.add_argument("object", metavar="object", help="The name of the object to show")
     cat_file_subparser.set_defaults(func=cmd_cat_file)
 
 
 def add_ls_files_subparser(subparsers) -> None:
-    ls_files_subparser = subparsers.add_parser(
-        "ls-files", help="Show information about files in the index."
-    )
+    ls_files_subparser = subparsers.add_parser("ls-files", help="Show information about files in the index.")
     ls_files_subparser.add_argument(
         "-s",
         dest="stage",
@@ -93,11 +87,13 @@ def add_ls_files_subparser(subparsers) -> None:
 
 
 def add_update_index_subparser(subparsers) -> None:
-    update_index_subparser = subparsers.add_parser(
-        "update-index", help="Add file contents to the index."
-    )
+    update_index_subparser = subparsers.add_parser("update-index", help="Add file contents to the index.")
     update_index_subparser.add_argument(
-        "paths", nargs="+", metavar="path", type=pathlib.Path, help="path(s) of files to add"
+        "paths",
+        nargs="+",
+        metavar="path",
+        type=pathlib.Path,
+        help="path(s) of files to add",
     )
     update_index_subparser.add_argument(
         "--add",
@@ -120,9 +116,7 @@ def add_commit_tree_subparser(subparsers) -> None:
     commit_tree_subparser = subparsers.add_parser("commit-tree", help="Create a new commit object.")
     commit_tree_subparser.add_argument("tree", help="An existing tree object")
     commit_tree_subparser.add_argument("-p", dest="parent", help="Id of a parent commit object")
-    commit_tree_subparser.add_argument(
-        "-m", dest="message", help="A paragraph in the commit log message"
-    )
+    commit_tree_subparser.add_argument("-m", dest="message", help="A paragraph in the commit log message")
     commit_tree_subparser.set_defaults(func=cmd_commit_tree)
 
 
