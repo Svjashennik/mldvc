@@ -18,8 +18,21 @@ REPO_STRUCTURE = {
 
 
 def repo_find(workdir: Union[str, pathlib.Path] = '.') -> pathlib.Path:
-    # PUT YOUR CODE HERE
-    ...
+    mldvc_dir_name = os.environ['MLDVC_DIR']
+    if isinstance(workdir, str):
+        workdir = pathlib.Path(workdir).absolute()
+    while True:
+        if _find_in_dir(workdir, mldvc_dir_name):
+            return workdir / mldvc_dir_name
+        else:
+            workdir = workdir.parent
+        if workdir.is_mount():
+            raise Exception(f'Not a git repository')
+
+
+def _find_in_dir(dir: Union[str, pathlib.Path], find_name: str) -> bool:
+    sub_dirs = [sub.name for sub in dir.iterdir() if sub.is_dir()]
+    return find_name in sub_dirs
 
 
 def repo_create(workdir: Union[str, pathlib.Path]) -> pathlib.Path:
