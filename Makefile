@@ -1,7 +1,7 @@
 all: black lint
 
 activate:
-	. /home/nikota/.virtualenvs/dataversioncontrol/bin/activate
+	source /home/nikota/.virtualenvs/dataversioncontrol/bin/activate
 
 lint:
 	pylint mldvc --rcfile .pylintrc
