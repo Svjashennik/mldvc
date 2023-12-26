@@ -1,4 +1,5 @@
 import io
+import os
 import pathlib
 import stat
 import unittest
@@ -14,6 +15,7 @@ from mldvc import index, objects, porcelain, repo, tree
 @unittest.skipIf(mldvc.__version_info__ < (0, 2, 0), "Нужна версия пакета 0.2.0 и выше")
 class HashObjectTestCase(TestCase):
     def setUp(self):
+        os.environ["MLDVC_DIR"] = ".git"
         self.setUpPyfakefs()
 
     def test_compute_object_id(self):

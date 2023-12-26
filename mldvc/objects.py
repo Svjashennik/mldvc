@@ -11,8 +11,18 @@ from mldvc.repo import repo_find
 
 
 def hash_object(data: bytes, fmt: str, write: bool = False) -> str:
-    # PUT YOUR CODE HERE
-    ...
+    blob = fmt + f' {len(data)}\x00'
+    store = blob.encode() + data
+    hash_file = hashlib.sha1(store).hexdigest()
+    if write:
+        path = repo_find() / 'objects' / hash_file[:2]
+        try:
+            os.mkdir(path)
+            with open(path / hash_file[2:], 'wb') as f:
+                f.write(zlib.compress(store))
+        except FileExistsError:
+            pass
+    return hash_file
 
 
 def resolve_object(obj_name: str, gitdir: pathlib.Path) -> tp.List[str]:

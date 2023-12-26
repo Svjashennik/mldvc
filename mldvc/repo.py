@@ -36,6 +36,8 @@ def _find_in_dir(dir: Union[str, pathlib.Path], find_name: str) -> bool:
 
 
 def repo_create(workdir: Union[str, pathlib.Path]) -> pathlib.Path:
+    if isinstance(workdir, str):
+        workdir = pathlib.Path(workdir).absolute()
     mldvc_dir = workdir / os.environ['MLDVC_DIR']
     try:
         os.mkdir(mldvc_dir)
