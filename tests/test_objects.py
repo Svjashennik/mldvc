@@ -56,6 +56,7 @@ class HashObjectTestCase(TestCase):
 @unittest.skipIf(mldvc.__version_info__ < (0, 3, 0), "Нужна версия пакета 0.3.0 и выше")
 class ResolveObjectTestCase(TestCase):
     def setUp(self):
+        os.environ["MLDVC_DIR"] = ".git"
         self.setUpPyfakefs()
 
     def test_resolve_object(self):
@@ -119,6 +120,7 @@ class ResolveObjectTestCase(TestCase):
 @unittest.skipIf(mldvc.__version_info__ < (0, 3, 0), "Нужна версия пакета 0.3.0 и выше")
 class ReadObjectTestCase(TestCase):
     def setUp(self):
+        os.environ["MLDVC_DIR"] = ".git"
         self.setUpPyfakefs()
 
     def test_read_object(self):
@@ -131,7 +133,7 @@ class ReadObjectTestCase(TestCase):
         self.assertEqual(b"that's what she said", data)
 
 
-@unittest.skipIf(mldvc.__version_info__ < (0, 3, 0), "Нужна версия пакета 0.3.0 и выше")
+@unittest.skipIf(mldvc.__version_info__ < (0, 6, 0), "Нужна версия пакета 0.6.0 и выше")
 class CatFileTestCase(TestCase):
     def setUp(self):
         self.setUpPyfakefs()
