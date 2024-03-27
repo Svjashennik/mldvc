@@ -26,15 +26,15 @@ def hash_object(data: bytes, fmt: str, write: bool = False) -> str:
 
 
 def resolve_object(obj_name: str, gitdir: pathlib.Path) -> list[str]:
-    if len(obj_name)<4 or len(obj_name)>20:
+    if len(obj_name) < 4 or len(obj_name) > 40:
         raise Exception(f"Not a valid object name {obj_name}")
     objects = []
     blob = obj_name[:2]
     index = obj_name[2:]
-    obj_dir = gitdir/'objects'/ blob
+    obj_dir = gitdir / 'objects' / blob
     for sub in obj_dir.iterdir():
         if sub.is_file() and sub.name.startswith(index):
-            objects.append(blob+sub.name)
+            objects.append(blob + sub.name)
     if not objects:
         raise Exception(f"Not a valid object name {obj_name}")
     return objects
@@ -44,16 +44,14 @@ def find_object(obj_name: str, gitdir: pathlib.Path) -> str:
     ...
 
 
-
 def read_object(sha: str, gitdir: pathlib.Path) -> tp.Tuple[str, bytes]:
-    path = gitdir/'objects'/sha[:2]/sha[2:]
+    path = gitdir / 'objects' / sha[:2] / sha[2:]
     with open(path, mode="rb") as f:
         obj_data = zlib.decompress(f.read())
     delmiter = obj_data.find(b"\x00")
-    header = obj_data[:delmiter][:obj_data.find(b' ')].decode()
-    content = obj_data[delmiter+1:]
+    header = obj_data[:delmiter][: obj_data.find(b' ')].decode()
+    content = obj_data[delmiter + 1 :]
     return header, content
-
 
 
 def read_tree(data: bytes) -> tp.List[tp.Tuple[int, str, str]]:
@@ -62,8 +60,12 @@ def read_tree(data: bytes) -> tp.List[tp.Tuple[int, str, str]]:
 
 
 def cat_file(obj_name: str, pretty: bool = True) -> None:
-    # PUT YOUR CODE HERE
-    ...
+    gitdir = repo_find()
+    objects = resolve_object(obj_name, gitdir)
+    for object_name in objects:
+        if pretty:
+            object_name = read_object(object_name, gitdir)[1].decode()
+        print(object_name)
 
 
 def find_tree_files(tree_sha: str, gitdir: pathlib.Path) -> tp.List[tp.Tuple[str, str]]:
