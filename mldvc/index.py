@@ -7,9 +7,10 @@ import typing as tp
 
 from mldvc.objects import hash_object
 
+PACK_FORMAT = '>10L20sH10s'
+
 
 class GitIndexEntry(tp.NamedTuple):
-    # @see: https://github.com/git/git/blob/master/Documentation/technical/index-format.txt
     ctime_s: int
     ctime_n: int
     mtime_s: int
@@ -25,13 +26,13 @@ class GitIndexEntry(tp.NamedTuple):
     name: str
 
     def pack(self) -> bytes:
-        # PUT YOUR CODE HERE
-        ...
+        packing_data = [value.encode() if isinstance(value, str) else value for value in self]
+        return struct.pack(PACK_FORMAT, *packing_data)
 
     @staticmethod
     def unpack(data: bytes) -> "GitIndexEntry":
-        # PUT YOUR CODE HERE
-        ...
+        values = struct.unpack(PACK_FORMAT, data)
+        return GitIndexEntry(*values[:-1], values[-1].decode().rstrip('\x00'))
 
 
 def read_index(gitdir: pathlib.Path) -> tp.List[GitIndexEntry]:
