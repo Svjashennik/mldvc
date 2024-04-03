@@ -28,11 +28,11 @@ class GitIndexEntry(tp.NamedTuple):
 
     def pack(self) -> bytes:
         packing_data = [value.encode() if isinstance(value, str) else value for value in self]
-        return struct.pack(PACK_FORMAT+f'{self.flags}{FILE_NAME_FORMAT}', *packing_data)
+        return struct.pack(PACK_FORMAT + f'{self.flags}{FILE_NAME_FORMAT}', *packing_data)
 
     @staticmethod
     def unpack(data: bytes) -> "GitIndexEntry":
-        values = struct.unpack(PACK_FORMAT, data[:struct.calcsize(PACK_FORMAT)])
+        values = struct.unpack(PACK_FORMAT, data[: struct.calcsize(PACK_FORMAT)])
         name = struct.unpack_from(f'{values[-1]}{FILE_NAME_FORMAT}', data, 62)[0].decode()
         return GitIndexEntry(*values, name)
 
@@ -40,23 +40,20 @@ class GitIndexEntry(tp.NamedTuple):
 def read_index(gitdir: pathlib.Path) -> tp.List[GitIndexEntry]:
     index_list = []
     try:
-        with open(gitdir/'index', 'rb') as file:
+        with open(gitdir / 'index', 'rb') as file:
             index_data = file.read()
             index = struct.unpack('>4s2L', index_data[:12])
             start = 12
             for _ in range(index[2]):
-                limit = start+struct.calcsize(PACK_FORMAT)
+                limit = start + struct.calcsize(PACK_FORMAT)
                 data = index_data[start:limit]
                 init_row = struct.unpack(PACK_FORMAT, data)
-                data += index_data[limit:limit+init_row[-1]+3]
-                index_list.append(
-                    GitIndexEntry.unpack(data)
-                )
+                data += index_data[limit : limit + init_row[-1] + 3]
+                index_list.append(GitIndexEntry.unpack(data))
                 start += len(data)
     except FileNotFoundError:
         pass
     return index_list
-
 
 
 def write_index(gitdir: pathlib.Path, entries: tp.List[GitIndexEntry]) -> None:
