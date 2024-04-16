@@ -7,9 +7,11 @@ import typing as tp
 
 from mldvc.objects import hash_object
 
+PACK_FORMAT = '>10L20sH'
+FILE_NAME_FORMAT = 's3x'
+
 
 class GitIndexEntry(tp.NamedTuple):
-    # @see: https://github.com/git/git/blob/master/Documentation/technical/index-format.txt
     ctime_s: int
     ctime_n: int
     mtime_s: int
@@ -25,18 +27,33 @@ class GitIndexEntry(tp.NamedTuple):
     name: str
 
     def pack(self) -> bytes:
-        # PUT YOUR CODE HERE
-        ...
+        packing_data = [value.encode() if isinstance(value, str) else value for value in self]
+        return struct.pack(PACK_FORMAT + f'{self.flags}{FILE_NAME_FORMAT}', *packing_data)
 
     @staticmethod
     def unpack(data: bytes) -> "GitIndexEntry":
-        # PUT YOUR CODE HERE
-        ...
+        values = struct.unpack(PACK_FORMAT, data[: struct.calcsize(PACK_FORMAT)])
+        name = struct.unpack_from(f'{values[-1]}{FILE_NAME_FORMAT}', data, 62)[0].decode()
+        return GitIndexEntry(*values, name)
 
 
 def read_index(gitdir: pathlib.Path) -> tp.List[GitIndexEntry]:
-    # PUT YOUR CODE HERE
-    ...
+    index_list = []
+    try:
+        with open(gitdir / 'index', 'rb') as file:
+            index_data = file.read()
+            index = struct.unpack('>4s2L', index_data[:12])
+            start = 12
+            for _ in range(index[2]):
+                limit = start + struct.calcsize(PACK_FORMAT)
+                data = index_data[start:limit]
+                init_row = struct.unpack(PACK_FORMAT, data)
+                data += index_data[limit : limit + init_row[-1] + 3]
+                index_list.append(GitIndexEntry.unpack(data))
+                start += len(data)
+    except FileNotFoundError:
+        pass
+    return index_list
 
 
 def write_index(gitdir: pathlib.Path, entries: tp.List[GitIndexEntry]) -> None:

@@ -9,3 +9,6 @@ lint:
 black:
 	black -S -l 110 mldvc
 	black -S -l 110 tests
+
+test:
+	python -m unittest discover
