@@ -10,7 +10,6 @@ from mldvc.refs import get_ref, is_detached, resolve_head, update_ref
 
 
 def write_tree(gitdir: pathlib.Path, index: tp.List[GitIndexEntry], dirname: str = "") -> str:
-    # PUT YOUR CODE HERE
     ...
 
 
