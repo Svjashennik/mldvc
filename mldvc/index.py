@@ -57,18 +57,20 @@ def read_index(gitdir: pathlib.Path) -> tp.List[GitIndexEntry]:
 
 
 def write_index(gitdir: pathlib.Path, entries: tp.List[GitIndexEntry]) -> None:
-    # PUT YOUR CODE HERE
-    ...
+    with open(gitdir / 'index', 'wb') as index:
+        index.write(struct.pack('>4s2L', 'DIRC'.encode(), 2, len(entries)))
+        for entry in entries:
+            index.write(entry.pack())
 
 
 def ls_files(gitdir: pathlib.Path, details: bool = False) -> None:
     index = read_index(gitdir)
     for gitindex in index:
         if details:
-            print(gitindex.name.split(".")[0])
-            print(f'{format(gitindex.mode, "o")} {hashlib.sha1((gitindex.name.split(".")[0]).encode()).hexdigest()} 0 {gitindex.name}')
+            print(f'{format(gitindex.mode, "o")} 0 {gitindex.name}')
         else:
             print(gitindex.name)
+
 
 def update_index(gitdir: pathlib.Path, paths: tp.List[pathlib.Path], write: bool = True) -> None:
     # PUT YOUR CODE HERE
