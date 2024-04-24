@@ -201,7 +201,7 @@ class UpdateIndexTestCase(TestCase):
         self.assertEqual(2, len(entries))
 
         names = [e.name for e in entries]
-        self.assertEqual(["digits.txt", "letters.txt"], names)
+        self.assertEqual(["letters.txt", "digits.txt"], names)
 
     def test_update_index_subdirs(self):
         gitdir = repo_create(".")
@@ -220,4 +220,11 @@ class UpdateIndexTestCase(TestCase):
         self.assertEqual(3, len(entries))
 
         names = [e.name for e in entries]
-        self.assertEqual(["alphabeta/letters.txt", "numbers/digits.txt", "quote.txt"], names)
+        self.assertEqual(
+            [
+                "quote.txt",
+                "alphabeta/letters.txt",
+                "numbers/digits.txt",
+            ],
+            names,
+        )

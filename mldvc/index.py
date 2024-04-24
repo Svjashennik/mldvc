@@ -73,5 +73,27 @@ def ls_files(gitdir: pathlib.Path, details: bool = False) -> None:
 
 
 def update_index(gitdir: pathlib.Path, paths: tp.List[pathlib.Path], write: bool = True) -> None:
-    # PUT YOUR CODE HERE
-    ...
+    entries = []
+    for path in paths:
+        stat = os.stat(path)
+        with open(path, 'rb') as file:
+            data = file.read()
+        entries.append(
+            GitIndexEntry(
+                int(stat.st_ctime),
+                0,
+                int(stat.st_mtime),
+                0,
+                stat.st_dev,
+                stat.st_ino,
+                stat.st_mode,
+                stat.st_uid,
+                stat.st_gid,
+                stat.st_size,
+                hash_object(data, 'blob', write=True).encode(),
+                len(str(path)),
+                str(path),
+            )
+        )
+    if write:
+        write_index(gitdir, entries)
