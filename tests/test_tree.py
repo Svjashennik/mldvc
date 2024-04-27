@@ -7,7 +7,8 @@ from unittest.mock import patch
 from pyfakefs.fake_filesystem_unittest import TestCase
 
 import mldvc
-from mldvc.index import read_index, update_index
+from mldvc.index import read_index, update_index, ls_files
+from mldvc.objects import hash_object
 from mldvc.repo import repo_create
 from mldvc.tree import commit_tree, write_tree
 

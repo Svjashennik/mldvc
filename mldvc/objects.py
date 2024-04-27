@@ -11,7 +11,7 @@ from mldvc.repo import repo_find
 
 
 def hash_object(data: bytes, fmt: str, write: bool = False) -> str:
-    blob = fmt + f' {len(data)}\x00'
+    blob = fmt + f' {len(data)}\0'
     store = blob.encode() + data
     hash_file = hashlib.sha1(store).hexdigest()
     if write:
