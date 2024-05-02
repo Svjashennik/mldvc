@@ -10,11 +10,10 @@ from mldvc.refs import get_ref, is_detached, resolve_head, update_ref
 
 
 def write_tree(gitdir: pathlib.Path, index: tp.List[GitIndexEntry], dirname: str = "") -> str:
-
     data = ''
     for entry in index:
-        data += f'{entry.mode} {entry.name}\0{entry.sha1}'
-    hash_data = hash_object(data.encode(),'blob',write=True)
+        data += f'{format(entry.mode, "o")} {entry.name}\0{entry.sha1.hex()}'
+    hash_data = hash_object(data.encode(),'tree',write=True)
     return hash_data
 
 

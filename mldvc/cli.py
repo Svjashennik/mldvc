@@ -11,7 +11,7 @@ from mldvc.tree import commit_tree, write_tree
 def cmd_init(args: argparse.Namespace):
     # TODO: Reinitialized existing pyvcs repository
     gitdir = repo_create(args.path)
-    print(f"Initialized empty pyvcs repository in {gitdir.absolute()}")
+    print(f"Initialized empty mlvcs repository in {gitdir.absolute()}")
 
 
 def cmd_hash_object(args: argparse.Namespace):

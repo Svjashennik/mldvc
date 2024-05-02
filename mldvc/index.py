@@ -67,7 +67,7 @@ def ls_files(gitdir: pathlib.Path, details: bool = False) -> None:
     index = read_index(gitdir)
     for gitindex in index:
         if details:
-            print(f'{format(gitindex.mode, "o")} 0 {gitindex.name}')
+            print(f'{format(gitindex.mode, "o")} {gitindex.sha1.hex()} 0  {gitindex.name}')
         else:
             print(gitindex.name)
 
@@ -90,7 +90,7 @@ def update_index(gitdir: pathlib.Path, paths: tp.List[pathlib.Path], write: bool
                 stat.st_uid,
                 stat.st_gid,
                 stat.st_size,
-                hash_object(data, 'blob', write=True).encode(),
+                bytes.fromhex(hash_object(data, 'blob', write=True)),
                 len(str(path)),
                 str(path),
             )
