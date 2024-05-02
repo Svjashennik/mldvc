@@ -30,7 +30,7 @@ class WriteTreeTestCase(TestCase):
         update_index(gitdir, [animals], write=True)
         entries = read_index(gitdir)
         sha = write_tree(gitdir, entries)
-        self.assertEqual("dc6b8ea09fb7573a335c5fb953b49b85bb6ca985", sha)
+        self.assertEqual("2fd203bb7354530b4f2c1fd9dabc4fbbc6edfa89", sha)
 
     def test_write_tree_subdirs(self):
         gitdir = repo_create(".")
@@ -44,13 +44,13 @@ class WriteTreeTestCase(TestCase):
         update_index(gitdir, [quote, letters, digits], write=True)
         entries = read_index(gitdir)
         sha = write_tree(gitdir, entries)
-        self.assertEqual("a9cde03408c68cbb205b038140b4c3a38aa1d01a", sha)
+        self.assertEqual("ad1405cd4f1887d227e81a1b76b2c637a0387de2", sha)
 
-        alphabeta_tree_sha = "7926bf494dcdb82261e1ca113116610f8d05470b"
+        alphabeta_tree_sha = "c24d2561588bb98ee90740b87f83d0832b0329e2"
         alphabeta_tree_obj = gitdir / "objects" / alphabeta_tree_sha[:2] / alphabeta_tree_sha[2:]
         self.assertTrue(alphabeta_tree_obj.exists())
 
-        numbers_tree_sha = "32ad3641a773ce34816dece1ce63cc24c8a514d0"
+        numbers_tree_sha = "91098401fa0ae2044d0ac890b9f371b666f5d7cc"
         numbers_tree_obj = gitdir / "objects" / numbers_tree_sha[:2] / numbers_tree_sha[2:]
         self.assertTrue(numbers_tree_obj.exists())
 
