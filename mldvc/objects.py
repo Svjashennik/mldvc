@@ -29,12 +29,12 @@ def resolve_object(obj_name: str, gitdir: pathlib.Path) -> list[str]:
     if len(obj_name) < 4 or len(obj_name) > 40:
         raise Exception(f"Not a valid object name {obj_name}")
     objects = []
-    blob = obj_name[:2]
+    header = obj_name[:2]
     index = obj_name[2:]
-    obj_dir = gitdir / 'objects' / blob
+    obj_dir = gitdir / 'objects' / header
     for sub in obj_dir.iterdir():
         if sub.is_file() and sub.name.startswith(index):
-            objects.append(blob + sub.name)
+            objects.append(header + sub.name)
     if not objects:
         raise Exception(f"Not a valid object name {obj_name}")
     return objects
@@ -48,9 +48,9 @@ def read_object(sha: str, gitdir: pathlib.Path) -> tp.Tuple[str, bytes]:
     path = gitdir / 'objects' / sha[:2] / sha[2:]
     with open(path, mode="rb") as f:
         obj_data = zlib.decompress(f.read())
-    delmiter = obj_data.find(b"\x00")
-    header = obj_data[:delmiter][: obj_data.find(b' ')].decode()
-    content = obj_data[delmiter + 1 :]
+    delimiter = obj_data.find(b"\x00")
+    header = obj_data[:delimiter][: obj_data.find(b' ')].decode()
+    content = obj_data[delimiter + 1 :]
     return header, content
 
 

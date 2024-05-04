@@ -90,7 +90,7 @@ def update_index(gitdir: pathlib.Path, paths: tp.List[pathlib.Path], write: bool
                 stat.st_uid,
                 stat.st_gid,
                 stat.st_size,
-                bytes.fromhex(hash_object(data, 'blob', write=True)),
+                bytes.fromhex(hash_object(data, 'blob', write=write)),
                 len(str(path)),
                 str(path),
             )
