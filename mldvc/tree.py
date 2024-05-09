@@ -15,7 +15,7 @@ def write_tree(gitdir: pathlib.Path, index: tp.List[GitIndexEntry], dirname: str
     for entry in index:
         path = entry.name.split('/')
         if len(path) == 1 or path[-2] == dirname:
-            data += f'{format(entry.mode, "o")} {entry.name}\0{entry.sha1.hex()}'
+            data += f'{entry.mode:o} {entry.name}\0{entry.sha1.hex()}'
         else:
             sub_dir = path[path.index(dirname) + 1] if dirname else path[0]
             if sub_dir not in sub_dirs:
@@ -32,8 +32,16 @@ def commit_tree(
     gitdir: pathlib.Path,
     tree: str,
     message: str,
-    parent: tp.Optional[str] = None,
-    author: tp.Optional[str] = None,
+    parent: str | None,
+    author: str | None,
 ) -> str:
-    # PUT YOUR CODE HERE
-    ...
+    if author is None and 'GIT_AUTHOR_NAME' in os.environ and 'GIT_AUTHOR_EMAIL' in os.environ:
+        author = f'{os.environ.get("GIT_AUTHOR_NAME")} <{os.environ.get("GIT_AUTHOR_EMAIL")}>'
+    timezone = f'{"-" if time.timezone > 0 else "+"}{abs(time.timezone) // 60 // 60:02}{abs(time.timezone) // 60 % 60:02}'
+    data = [f'tree {tree}']
+    if parent is not None:
+        data.append(f'parent {parent}')
+    data.append(f'author {author} {int(time.mktime(time.localtime()))} {timezone}')
+    data.append(f'committer {author} {int(time.mktime(time.localtime()))} {timezone}')
+    data.append(f'\n{message}\n')
+    return hash_object("\n".join(data).encode(), 'commit', write=True)

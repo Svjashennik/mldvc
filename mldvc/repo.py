@@ -13,12 +13,12 @@ REPO_STRUCTURE = {
     },
     'description': {'type': TYPE_FILE, 'init': 'Unnamed mldvc repository.\n'},
     'objects': {'type': TYPE_DIR},
-    'refs': {'type': TYPE_DIR, 'init': {'heads': {'type': TYPE_FILE}, 'tags': {'type': TYPE_FILE}}},
+    'refs': {'type': TYPE_DIR, 'init': {'heads': {'type': TYPE_DIR}, 'tags': {'type': TYPE_DIR}}},
 }
 
 
 def repo_find(workdir: Union[str, pathlib.Path] = '.') -> pathlib.Path:
-    mldvc_dir_name = os.environ.get('MLDVC_DIR', 'mldvc')
+    mldvc_dir_name = os.environ.get('MLDVC_DIR', '.mldvc')
     if isinstance(workdir, str):
         workdir = pathlib.Path(workdir).absolute()
     while True:
@@ -38,7 +38,7 @@ def _find_in_dir(dir: Union[str, pathlib.Path], find_name: str) -> bool:
 def repo_create(workdir: Union[str, pathlib.Path]) -> pathlib.Path:
     if isinstance(workdir, str):
         workdir = pathlib.Path(workdir).absolute()
-    mldvc_dir = workdir / os.environ.get('MLDVC_DIR', 'mldvc')
+    mldvc_dir = workdir / os.environ.get('MLDVC_DIR', '.mldvc')
     try:
         os.mkdir(mldvc_dir)
     except Exception:

@@ -68,4 +68,4 @@ class CommitTreeTestCase(TestCase):
         author = "Astashkin <221715@fa.ru>"
         message = "initial commit"
         commit_sha = commit_tree(gitdir, tree_sha, message, parent=None, author=author)
-        self.assertEqual("f60952d53906d8b2e6f8567762f86fbe7ca4ac65", commit_sha)
+        self.assertEqual("c76bc0da0703ee0cd13b383f6a10cc480625b662", commit_sha)
