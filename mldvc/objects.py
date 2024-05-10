@@ -55,8 +55,18 @@ def read_object(sha: str, gitdir: pathlib.Path) -> tp.Tuple[str, bytes]:
 
 
 def read_tree(data: bytes) -> tp.List[tp.Tuple[int, str, str]]:
-    # PUT YOUR CODE HERE
-    ...
+    tree = []
+    while data:
+        start_sha = data.index(b"\00")
+        mode_b: bytes
+        name_b: bytes
+        mode_b, name_b = data[:start_sha].split(b" ")
+        mode = mode_b.decode()
+        name = name_b.decode()
+        sha = data[start_sha + 1 : start_sha + 21]
+        tree.append((int(mode), name, sha.hex()))
+        data = data[start_sha + 21 :]
+    return tree
 
 
 def cat_file(obj_name: str, pretty: bool = True) -> None:
@@ -64,8 +74,17 @@ def cat_file(obj_name: str, pretty: bool = True) -> None:
     objects = resolve_object(obj_name, gitdir)
     for object_name in objects:
         if pretty:
-            object_name = read_object(object_name, gitdir)[1].decode()
-        print(object_name)
+            fmt, content = read_object(object_name, gitdir)
+            if fmt in ['blob', 'commit']:
+                print(content.decode())
+            else:
+                for tree in read_tree(content):
+                    if tree[0] != 40000:
+                        print(f"{tree[0]:06}", "blob", tree[2] + "\t" + tree[1])
+                    else:
+                        print(f"{tree[0]:06}", "tree", tree[2] + "\t" + tree[1])
+        else:
+            print(object_name)
 
 
 def find_tree_files(tree_sha: str, gitdir: pathlib.Path) -> tp.List[tp.Tuple[str, str]]:
@@ -74,5 +93,11 @@ def find_tree_files(tree_sha: str, gitdir: pathlib.Path) -> tp.List[tp.Tuple[str
 
 
 def commit_parse(raw: bytes, start: int = 0, dct=None):
-    # PUT YOUR CODE HERE
-    ...
+    result: tp.Dict[str, tp.Any] = {"message": []}
+    for i in map(lambda x: x.decode(), raw.split(b"\n")):
+        if "tree" in i or "parent" in i or "author" in i or "committer" in i:
+            name, val = i.split(" ", maxsplit=1)
+            result[name] = val
+        else:
+            result["message"].append(i)
+    return result

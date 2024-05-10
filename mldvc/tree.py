@@ -10,12 +10,12 @@ from mldvc.refs import get_ref, is_detached, resolve_head, update_ref
 
 
 def write_tree(gitdir: pathlib.Path, index: tp.List[GitIndexEntry], dirname: str = "") -> str:
-    data = ''
+    data = b''
     sub_dirs = {}
     for entry in index:
         path = entry.name.split('/')
         if len(path) == 1 or path[-2] == dirname:
-            data += f'{entry.mode:o} {entry.name}\0{entry.sha1.hex()}'
+            data += f'{entry.mode:o} {entry.name.split("/")[-1]}\0'.encode() + entry.sha1
         else:
             sub_dir = path[path.index(dirname) + 1] if dirname else path[0]
             if sub_dir not in sub_dirs:
@@ -23,8 +23,8 @@ def write_tree(gitdir: pathlib.Path, index: tp.List[GitIndexEntry], dirname: str
             sub_dirs[sub_dir].append(entry)
     for sub_dir in sorted(sub_dirs):
         hash_data = write_tree(gitdir, sub_dirs[sub_dir], sub_dir)
-        data += f'040000 {sub_dir}\0{hash_data}'
-    hash_data = hash_object(data.encode(), 'tree', write=True)
+        data += f'040000 {sub_dir}\0'.encode() + bytes.fromhex(hash_data)
+    hash_data = hash_object(data, 'tree', write=True)
     return hash_data
 
 

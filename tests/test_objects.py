@@ -161,13 +161,13 @@ class CatFileTestCase(TestCase):
         index.update_index(gitdir, [quote, letters, digits], write=True)
         entries = index.read_index(gitdir)
         sha = tree.write_tree(gitdir, entries)
-        self.assertEqual("a9cde03408c68cbb205b038140b4c3a38aa1d01a", sha)
+        self.assertEqual("ba35d8fab627ba2aed73d2447baa35537deec53c", sha)
 
         expected_output = "\n".join(
             [
+                "100644 blob 7e774cf533c51803125d4659f3488bd9dffc41a6\tquote.txt",
                 "040000 tree 7926bf494dcdb82261e1ca113116610f8d05470b\talphabeta",
                 "040000 tree 32ad3641a773ce34816dece1ce63cc24c8a514d0\tnumbers",
-                "100644 blob 7e774cf533c51803125d4659f3488bd9dffc41a6\tquote.txt",
             ]
         )
 
