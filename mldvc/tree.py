@@ -6,7 +6,7 @@ import typing as tp
 
 from mldvc.index import GitIndexEntry, read_index
 from mldvc.objects import hash_object
-from mldvc.refs import get_ref, is_detached, resolve_head, update_ref
+from mldvc.refs import get_ref, is_detached, resolve_head, update_ref, ref_resolve
 
 
 def write_tree(gitdir: pathlib.Path, index: tp.List[GitIndexEntry], dirname: str = "") -> str:
@@ -44,4 +44,5 @@ def commit_tree(
     data.append(f'author {author} {int(time.mktime(time.localtime()))} {timezone}')
     data.append(f'committer {author} {int(time.mktime(time.localtime()))} {timezone}')
     data.append(f'\n{message}\n')
-    return hash_object("\n".join(data).encode(), 'commit', write=True)
+    hash_data = hash_object("\n".join(data).encode(), 'commit', write=True)
+    return hash_data

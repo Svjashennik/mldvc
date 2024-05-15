@@ -13,6 +13,7 @@ from mldvc.cli import (
     cmd_update_index,
     cmd_update_ref,
     cmd_write_tree,
+    cmd_commit,
 )
 
 
@@ -120,6 +121,13 @@ def add_commit_tree_subparser(subparsers) -> None:
     commit_tree_subparser.set_defaults(func=cmd_commit_tree)
 
 
+def add_commit_subparser(subparsers) -> None:
+    # FIXME: Add author
+    commit_subparser = subparsers.add_parser("commit", help="Create a new commit object.")
+    commit_subparser.add_argument("-m", dest="message", help="A paragraph in the commit log message")
+    commit_subparser.set_defaults(func=cmd_commit)
+
+
 def add_update_ref_subparser(subparsers) -> None:
     # FIXME: Добавить описание для аргументов
     update_ref_subparser = subparsers.add_parser(
@@ -163,6 +171,7 @@ def parse_args() -> argparse.Namespace:
     add_update_index_subparser(subparsers)
     add_write_tree_subparser(subparsers)
     add_commit_tree_subparser(subparsers)
+    add_commit_subparser(subparsers)
     add_update_ref_subparser(subparsers)
     add_rev_parse_subparser(subparsers)
     add_symbolic_ref_subparser(subparsers)

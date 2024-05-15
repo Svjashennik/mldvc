@@ -45,7 +45,7 @@ def cmd_write_tree(args: argparse.Namespace):
 
 def cmd_commit_tree(args: argparse.Namespace):
     gitdir = repo_find()
-    sha = commit_tree(gitdir, args.tree, args.message, args.parent)
+    sha = commit_tree(gitdir, args.tree, args.message, args.parent, None)
     print(sha)
 
 
@@ -67,7 +67,7 @@ def cmd_symbolic_ref(args: argparse.Namespace):
 
 def cmd_commit(args: argparse.Namespace):
     gitdir = repo_find()
-    sha = commit(gitdir, args.message, args.author)
+    sha = commit(gitdir, args.message, None)
     print(sha)
 
 
